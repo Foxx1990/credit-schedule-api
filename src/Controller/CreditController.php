@@ -20,7 +20,7 @@ class CreditController extends AbstractController
     }
 
     /**
-     * @Route("/api/calculate", methods={"GET"})
+     * @Route("/api/calculate", methods={"POST"})
      */
     public function calculate(Request $request): JsonResponse
     {

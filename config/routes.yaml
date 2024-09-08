@@ -2,7 +2,7 @@
 api_calculate:
     path: /api/calculate
     controller: App\Controller\CreditController::calculate
-    methods: GET
+    methods: POST
 
 api_list_schedules:
     path: /api/schedules
