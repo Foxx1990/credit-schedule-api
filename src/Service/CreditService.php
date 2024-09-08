@@ -11,47 +11,52 @@ class CreditService
 
     public function calculateSchedule(float $amount, int $numInstallments, float $interestRate): array
     {
-        if ($amount < 1000 || $amount > 12000 || $amount % 500 !== 0) {
-            throw new \InvalidArgumentException('Invalid amount');
-        }
+       // Validations
+    if ($amount < 1000 || $amount > 12000 || $amount % 500 !== 0) {
+        throw new \InvalidArgumentException('Invalid amount');
+    }
 
-        if ($numInstallments < 3 || $numInstallments > 18 || $numInstallments % 3 !== 0) {
-            throw new \InvalidArgumentException('Invalid number of installments');
-        }
+    if ($numInstallments < 3 || $numInstallments > 18 || $numInstallments % 3 !== 0) {
+        throw new \InvalidArgumentException('Invalid number of installments');
+    }
 
-        $k = 12; // number of installments per year
-        $r = $interestRate / 100;
-        $n = $numInstallments;
+    // Constants
+    $k = 12; // number of installments per year
+    $r = $interestRate / 100;
+    $n = $numInstallments;
 
-        $schedule = [];
-        $totalInterest = 0;
+    $schedule = [];
+    $principal = $amount;
 
-        for ($i = 1; $i <= $n; $i++) {
-            $R = $amount * $r / $k * pow(1 + $r / $k, $n) / (pow(1 + $r / $k, $n) - 1);
-            $interest = $amount * $r / $k;
-            $principal = $R - $interest;
-            $amount -= $principal;
-            $totalInterest += $interest;
+    // Calculate the monthly installment amount (R)
+    $r_per_k = $r / $k;
+    $pow_term = pow(1 + $r_per_k, $n);
+    $R = $principal * ($r_per_k * $pow_term) / ($pow_term - 1);
 
-            $schedule[] = [
-                'installment_number' => $i,
-                'installment_amount' => round($R, 2),
-                'interest_amount' => round($interest, 2),
-                'principal_amount' => round($principal, 2),
-            ];
-        }
+    for ($i = 1; $i <= $n; $i++) {
+        $interest = $principal * $r_per_k;
+        $capital = $R - $interest;
+        $principal -= $capital;
 
-        $metric = [
-            'calculation_time' => (new DateTime())->format('Y-m-d H:i:s'),
-            'num_installments' => $numInstallments,
-            'amount' => $amount,
-            'interest_rate' => $interestRate,
+        $schedule[] = [
+            'installment_number' => $i,
+            'installment_amount' => round($R, 2),
+            'interest_amount' => round($interest, 2),
+            'principal_amount' => round($capital, 2),
         ];
+    }
 
-        $result = [
-            'metric' => $metric,
-            'schedule' => $schedule,
-        ];
+    $metric = [
+        'calculation_time' => (new \DateTime())->format('Y-m-d H:i:s'),
+        'num_installments' => $numInstallments,
+        'amount' => $amount,
+        'interest_rate' => $interestRate,
+    ];
+
+    $result = [
+        'metric' => $metric,
+        'schedule' => $schedule,
+    ];
 
         $this->schedules[] = $result;
 
