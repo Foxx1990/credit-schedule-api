@@ -19,7 +19,7 @@ class CreditService
 
     public function calculateSchedule(float $amount, int $numInstallments, float $interestRate): array
     {
-        // Validations
+        // Validations, maybe move to separate method.
         $amount = floatval($amount);
         $numInstallments = intval($numInstallments);
         $interestRate = floatval($interestRate);
