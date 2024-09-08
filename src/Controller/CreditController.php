@@ -20,15 +20,13 @@ class CreditController extends AbstractController
     }
 
     /**
-     * @Route("/api/calculate", methods={"POST"})
+     * @Route("/api/calculate", methods={"GET"})
      */
     public function calculate(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-
-        $amount = $data['amount'];
-        $numInstallments = $data['num_installments'];
-        $interestRate = $data['interest_rate'];
+        $amount = $request->query->get('amount');
+        $numInstallments = $request->query->get('num_installments');
+        $interestRate = $request->query->get('interest_rate');
 
         $result = $this->creditService->calculateSchedule($amount, $numInstallments, $interestRate);
 

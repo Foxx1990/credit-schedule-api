@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use DateTime;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class CreditService
 {
@@ -12,13 +14,21 @@ class CreditService
     public function calculateSchedule(float $amount, int $numInstallments, float $interestRate): array
     {
        // Validations
-    if ($amount < 1000 || $amount > 12000 || $amount % 500 !== 0) {
-        throw new \InvalidArgumentException('Invalid amount');
-    }
+       $amount = floatval($amount);
+       $numInstallments = intval($numInstallments);
+       $interestRate = floatval($interestRate);
 
-    if ($numInstallments < 3 || $numInstallments > 18 || $numInstallments % 3 !== 0) {
-        throw new \InvalidArgumentException('Invalid number of installments');
-    }
+       if ($amount < 1000 || $amount > 12000 || $amount % 500 !== 0) {
+           return new JsonResponse([
+               'error' => 'Invalid amount'
+           ], Response::HTTP_BAD_REQUEST);
+       }
+
+       if ($numInstallments < 3 || $numInstallments > 18 || $numInstallments % 3 !== 0) {
+           return new JsonResponse([
+               'error' => 'Invalid number of installments'
+           ], Response::HTTP_BAD_REQUEST);
+       }
 
     // Constants
     $k = 12; // number of installments per year
