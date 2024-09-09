@@ -42,6 +42,7 @@ Set the JWT_PASSPHRASE in your .env.local to match the passphrase used during th
 
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+
 6. Start the development server
 
 symfony server:start
@@ -67,6 +68,7 @@ Response:
 Use this token for further API calls by including it in the Authorization header as Bearer <token>.
 
 Loan Calculation
+
 GET /api/calculate
 Calculates the loan repayment schedule based on the provided loan amount, number of installments, and interest rate.
 
@@ -140,24 +142,4 @@ json
     },
     ...
 ]
-Testing with Postman
-Step 1: Get JWT Token
-Send a POST request to /api/login with valid username and password to receive a JWT token.
-
-Use this token in further requests by setting it in the Authorization header as Bearer <token>.
-
-Step 2: Access Protected Endpoints
-For endpoints like /api/exclude/{id} and /api/schedules, set the Authorization header in your requests with the JWT token.
-Example:
-
-makefile
-Skopiuj kod
-Authorization: Bearer your_jwt_token
-Running Tests
-To run the automated tests for the application:
-
-bash
-Skopiuj kod
-php bin/phpunit
-Make sure the test environment is configured in your .env.test.local file.
 
