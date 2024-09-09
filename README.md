@@ -13,9 +13,11 @@ Installation
 
 git clone 
 cd credit-schedule-api
+
 2. Install dependencies
 
 composer install
+
 3. Configure environment variables
 Create the .env.local file to configure your database and JWT settings.
 
@@ -28,6 +30,7 @@ DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5
 JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
 JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=your_passphrase
+
 4. Generate JWT keys
 
 mkdir -p config/jwt
@@ -54,6 +57,7 @@ Request:
     "username": "your_username",
     "password": "your_password"
 }
+
 Response:
 
 
