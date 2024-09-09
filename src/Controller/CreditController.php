@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class CreditController extends AbstractController
 {
     private CreditService $creditService;
@@ -35,23 +36,29 @@ class CreditController extends AbstractController
 
     /**
      * @Route("/api/schedules", methods={"GET"})
+     * @IsGranted("ROLE_USER")
      */
-    public function listSchedules(Request $request): JsonResponse
+    public function listSchedules(): JsonResponse
     {
-        $includeExcluded = $request->query->get('include_excluded', 'all');
-
-        $schedules = $this->creditService->listSchedules($includeExcluded === 'excluded');
-
-        return new JsonResponse($schedules);
+        try {
+            $schedules = $this->creditService->listSchedules();
+            return new JsonResponse($schedules);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    /**
-     * @Route("/api/exclude/{id}", methods={"DELETE"})
+      /**
+     * @Route("/api/exclude/{id}", methods={"POST"})
+     * @IsGranted("ROLE_USER")
      */
-    public function excludeSchedule(int $id): Response
+    public function excludeSchedule(int $id): JsonResponse
     {
-        $this->creditService->excludeSchedule($id);
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
+        try {
+            $this->creditService->excludeSchedule($id);
+            return new JsonResponse(['status' => 'Calculation excluded']);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
